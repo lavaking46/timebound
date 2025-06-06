@@ -1,0 +1,4 @@
+name: TimeBound
+version: '1.0.0-b.1-SNAPSHOT'
+main: us.newrealms.timeBound.TimeBound
+api-version: '1.21'
