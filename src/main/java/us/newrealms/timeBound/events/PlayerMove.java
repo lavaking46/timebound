@@ -73,11 +73,20 @@ public class PlayerMove extends BaseListener {
                     entity.addPassenger(doorShulker);
                 });
                 doorShulker.teleportAsync(new Location(world, 949, 57, 454));
+                world.setType(new Location(world, 948, 57, 455), Material.BARRIER);
+                world.setType(new Location(world, 949, 57, 455), Material.BARRIER);
+                world.setType(new Location(world, 950, 57, 455), Material.BARRIER);
+                world.setType(new Location(world, 948, 58, 455), Material.BARRIER);
+                world.setType(new Location(world, 949, 58, 455), Material.BARRIER);
+                world.setType(new Location(world, 950, 58, 455), Material.BARRIER);
+                world.setType(new Location(world, 948, 59, 455), Material.BARRIER);
+                world.setType(new Location(world, 949, 59, 455), Material.BARRIER);
+                world.setType(new Location(world, 950, 59, 455), Material.BARRIER);
                 world.setType(new Location(world, 948, 60, 455), Material.BARRIER);
-                world.setType(new Location(world, 948, 61, 455), Material.BARRIER);
                 world.setType(new Location(world, 949, 60, 455), Material.BARRIER);
-                world.setType(new Location(world, 949, 61, 455), Material.BARRIER);
                 world.setType(new Location(world, 950, 60, 455), Material.BARRIER);
+                world.setType(new Location(world, 948, 61, 455), Material.BARRIER);
+                world.setType(new Location(world, 949, 61, 455), Material.BARRIER);
                 world.setType(new Location(world, 950, 61, 455), Material.BARRIER);
                 world.setType(new Location(world, 949, 62, 455), Material.BARRIER);
                 world.setType(new Location(world, 950, 62, 454), Material.BARRIER);
@@ -88,26 +97,15 @@ public class PlayerMove extends BaseListener {
                     blockDisplay.setInterpolationDuration(12 * 20);
                     blockDisplay.setTransformation(bDisplay2);
                     scheduler.runTaskTimer(plugin, event -> {
-                        doorShulker.teleportAsync(doorShulker.getLocation().add(0, 0.025, 0));
-                        if (doorShulker.getY() == 60) {
-                            world.setType(new Location(world, 948, 60, 455), Material.AIR);
-                            world.setType(new Location(world, 949, 60, 455), Material.AIR);
-                            world.setType(new Location(world, 950, 60, 455), Material.AIR);
-                        }
-                        if (doorShulker.getY() == 61) {
-                            world.setType(new Location(world, 948, 61, 455), Material.AIR);
-                            world.setType(new Location(world, 949, 61, 455), Material.AIR);
-                            world.setType(new Location(world, 950, 61, 455), Material.AIR);
-                        }
-                        if (doorShulker.getY() == 62) {
-                            world.setType(new Location(world, 949, 62, 455), Material.AIR);
-                            world.setType(new Location(world, 950, 62, 454), Material.AIR);
-                            world.setType(new Location(world, 948, 62, 454), Material.AIR);
-                        }
-                        if (doorShulker.getY() >= 63) {
+                        int x = 57;
+                        world.setType(new Location(world, 948, x, 455), Material.BARRIER);
+                        world.setType(new Location(world, 949, x, 455), Material.BARRIER);
+                        world.setType(new Location(world, 950, x, 455), Material.BARRIER);
+                        x++;
+                        if(x == 62){
                             event.cancel();
                         }
-                    }, 0, 4);
+                    }, 0, 20);
                 }, 500);
                 scheduler.runTaskLater(plugin, () -> {
                     blockDisplay.remove();

@@ -3,7 +3,7 @@ package us.newrealms.timeBound.utils;
 import java.util.HashMap;
 
 public class DungeonUtils {
-    static HashMap<String, String> tutorial = new HashMap<>();
+    static HashMap<?, ?> tutorial = new HashMap<>();
     public static void initializeDungeons(){
         tutorial.put("active","true");
         tutorial.put("soundroom1answer","1,2,3,4");
