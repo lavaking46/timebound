@@ -1,5 +1,6 @@
 package us.newrealms.timeBound.events;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -9,15 +10,19 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import us.newrealms.timeBound.utils.DungeonUtils;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import us.newrealms.timeBound.TimeBound;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
+import static net.kyori.adventure.text.format.NamedTextColor.RED;
 import static us.newrealms.timeBound.TimeBound.log;
+import static us.newrealms.timeBound.utils.DungeonUtils.PuzzleSounds;
+import static us.newrealms.timeBound.utils.Utils.cMsg;
 
 public class PlayerInteract implements Listener {
     @EventHandler
@@ -25,39 +30,66 @@ public class PlayerInteract implements Listener {
         Player p = event.getPlayer();
         ItemStack used = event.getItem();
         Block b = event.getClickedBlock();
+        PersistentDataContainer pPDC = p.getPersistentDataContainer();
+//        log.info("Click Event");
         if (event.getAction().isRightClick()) {
+//            log.info("Right Click Event");
             if(used != null){
+//                log.info("Used item is not null");
                 if(b != null){
                     Location bLocation = b.getLocation();
                     if(b.getType() == Material.DISPENSER){
                         log.info("Dispenser right clicked with item");
                     }
-                    if(b.getType() == Material.STONE_BUTTON){
-                        String sequence = DungeonUtils.getTutorialDungeon("soundRoomSequence");
-                        List<String> answer = Arrays.stream(DungeonUtils.getTutorialDungeon("soundroom1answer").splitWithDelimiters(",",5)).toList();
-                        if(bLocation.getBlockX() == 977 & bLocation.getBlockY() == 48 & bLocation.getBlockZ() == 468){
-                            if(sequence.isBlank()){
-                                if(answer.getFirst().equalsIgnoreCase("1")){
-                                    p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS,1,1);
-                                    DungeonUtils.updateTutorialDungeon("soundRoomSequence","1");
-                                }
-                                else{
-                                    p.playSound(p, Sound.ENTITY_VILLAGER_HURT,1,1);
-                                }
+                }
+            }
+            if(b != null){
+                Location bLocation = b.getLocation();
+                if(b.getType() == Material.STONE_BUTTON){
+//                    log.info("Stone Button Right Clicked");
+                    List<Integer> answer = pPDC.get(TimeBound.getKey("tutorialDungeonPuzzleOneAnswer"), PersistentDataType.LIST.integers());
+                    List<Integer> attempt = pPDC.get(TimeBound.getKey("tutorialDungeonPuzzleOneAttempt"), PersistentDataType.LIST.integers());
+                    if(attempt == null){
+                        attempt = new java.util.ArrayList<>();
+                    }
+//                    log.info(String.valueOf(bLocation.getBlockX()) + String.valueOf(bLocation.getBlockY()) + String.valueOf(bLocation.getBlockZ()));
+                    if(bLocation.getBlockX() == 977 & bLocation.getBlockY() == 48 & bLocation.getBlockZ() == 468){
+//                        log.info("Tutorial Dungeon Sound Puzzle One Button One Pressed");
+                        attempt.add(1);
+                        p.playSound(p,PuzzleSounds("TutorialSoundPuzzleOne",1),1,1);
+                    }
+                    if(bLocation.getBlockX() == 985 & bLocation.getBlockY() == 48 & bLocation.getBlockZ() == 468){
+//                        log.info("Tutorial Dungeon Sound Puzzle One Button Two Pressed");
+                        attempt.add(2);
+                        p.playSound(p,PuzzleSounds("TutorialSoundPuzzleOne",2),1,1);
+                    }
+                    if(bLocation.getBlockX() == 985 & bLocation.getBlockY() == 48 & bLocation.getBlockZ() == 457){
+//                        log.info("Tutorial Dungeon Sound Puzzle One Button Three Pressed");
+                        attempt.add(3);
+                        p.playSound(p,PuzzleSounds("TutorialSoundPuzzleOne",3),1,1);
+                    }
+                    if(bLocation.getBlockX() == 977 & bLocation.getBlockY() == 48 & bLocation.getBlockZ() == 457){
+//                        log.info("Tutorial Dungeon Sound Puzzle One Button Four Pressed");
+                        attempt.add(4);
+                        p.playSound(p,PuzzleSounds("TutorialSoundPuzzleOne",4),1,1);
+                    }
+                    if(answer != null){
+//                        log.info("Tutorial Dungeon Sound Puzzle One Answer is not null");
+                        int numRun = 0;
+                        for(Integer x : attempt){
+                            log.info(x.toString());
+                            if(!Objects.equals(answer.get(numRun), x)){
+                                p.playSound(p, Sound.ENTITY_VILLAGER_HURT,1,1);
+                                pPDC.remove(TimeBound.getKey("tutorialDungeonPuzzleOneAttempt"));
+                                cMsg(false,p, Component.text("You failed").color(RED));
+                                break;
                             }
-                            else{
-                                sequence.concat(",1");
-                                List<String> sequence2 = Arrays.stream(sequence.splitWithDelimiters(",",5)).toList();
-                                for(String s : sequence2){
-                                    if(answer.indexOf(s) != sequence2.indexOf(s)){
-                                        p.playSound(p, Sound.ENTITY_VILLAGER_HURT,1,1);
-                                        DungeonUtils.updateTutorialDungeon("soundRoomSequence","");
-                                    }
-                                    else{
-                                        p.playSound(p, Sound.BLOCK_NOTE_BLOCK_BASS,1,1);
-                                        DungeonUtils.updateTutorialDungeon("soundRoomSequence",sequence.concat(",1"));
-                                    }
-                                }
+                            numRun += 1;
+                        }
+                        if(pPDC.get(TimeBound.getKey("tutorialDungeonPuzzleOneAttempt"),PersistentDataType.LIST.integers()) != null){
+                            pPDC.set(TimeBound.getKey("tutorialDungeonPuzzleOneAttempt"),PersistentDataType.LIST.integers(),attempt);
+                            if(attempt == answer){
+                                p.playSound(p,Sound.ENTITY_VILLAGER_YES,1,1);
                             }
                         }
                     }

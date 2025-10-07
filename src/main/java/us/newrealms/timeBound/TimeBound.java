@@ -10,6 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import us.newrealms.timeBound.commands.Statistics;
 import us.newrealms.timeBound.events.InventoryInteract;
+import us.newrealms.timeBound.events.PlayerInteract;
 import us.newrealms.timeBound.events.PlayerMove;
 import us.newrealms.timeBound.utils.DungeonUtils;
 
@@ -32,12 +33,15 @@ public final class TimeBound extends JavaPlugin {
 //                "custom_item_name", new NamespacedKey(plugin,"custom_item_name"),
 //                "team", new NamespacedKey(plugin,"team"),
 //                "structureScore", new NamespacedKey(plugin,"structureScore"),
-                "statistics", new NamespacedKey(plugin, "statistics")
+                "statistics", new NamespacedKey(plugin, "statistics"),
+                "tutorialDungeonPuzzleOneAnswer", new NamespacedKey(plugin,"tutorialDungeonPuzzleOneAnswer"),
+                "tutorialDungeonPuzzleOneAttempt", new NamespacedKey(plugin,"tutorialDungeonPuzzleOneAttempt")
         );
     }
     @Override
     public void onLoad() {
         plugin = this;
+        setKeys();
     }
 
     @Override
@@ -50,7 +54,7 @@ public final class TimeBound extends JavaPlugin {
         });
         getServer().getPluginManager().registerEvents(new InventoryInteract(),this);
         getServer().getPluginManager().registerEvents(new PlayerMove(),this);
-        DungeonUtils.;
+        getServer().getPluginManager().registerEvents(new PlayerInteract(),this);
     }
 
     @Override
