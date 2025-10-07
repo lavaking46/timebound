@@ -34,8 +34,8 @@ public final class TimeBound extends JavaPlugin {
 //                "team", new NamespacedKey(plugin,"team"),
 //                "structureScore", new NamespacedKey(plugin,"structureScore"),
                 "statistics", new NamespacedKey(plugin, "statistics"),
-                "tutorialDungeonPuzzleOneAnswer", new NamespacedKey(plugin,"tutorialDungeonPuzzleOneAnswer"),
-                "tutorialDungeonPuzzleOneAttempt", new NamespacedKey(plugin,"tutorialDungeonPuzzleOneAttempt")
+                "tutorialDungeonPuzzleOneAnswer", new NamespacedKey(plugin,"tutorialdungeonpuzzleoneanswer"),
+                "tutorialDungeonPuzzleOneAttempt", new NamespacedKey(plugin,"tutorialdungeonpuzzleoneattempt")
         );
     }
     @Override

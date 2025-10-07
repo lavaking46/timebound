@@ -71,23 +71,11 @@ public class PlayerMove extends BaseListener {
             //Tutorial Dungeon cave entrance
             if (to.z() < 534 & from.z() >= 534 & p.getY() > 62 & p.getY() < 69 & p.getX() < 951 & p.getX() > 947) {
                 Transformation bDisplay = new Transformation(new Vector3f(0, 0, 0), new AxisAngle4f(0, 0, 0, 0), new Vector3f(3, 6, 0.9f), new AxisAngle4f(0, 0, 0, 0));
-                Shulker doorShulker = world.spawn(new Location(world, 949, 57, 454), Shulker.class, entity -> {
-                    entity.setAI(false);
-                    entity.setSilent(true);
-                    entity.setInvisible(true);
-                    entity.setInvulnerable(true);
-                    AttributeInstance scale = entity.getAttribute(Attribute.SCALE);
-                    if (scale != null) {
-                        scale.setBaseValue(3);
-                    }
-                });
                 BlockDisplay blockDisplay = world.spawn(new Location(world, 948, 57, 455), BlockDisplay.class, entity -> {
                     entity.setBlock(Material.NETHERITE_BLOCK.createBlockData());
                     entity.setBillboard(Display.Billboard.FIXED);
                     entity.setTransformation(bDisplay);
-                    entity.addPassenger(doorShulker);
                 });
-                doorShulker.teleportAsync(new Location(world, 949, 57, 454));
                 world.setType(new Location(world, 948, 57, 455), Material.BARRIER);
                 world.setType(new Location(world, 949, 57, 455), Material.BARRIER);
                 world.setType(new Location(world, 950, 57, 455), Material.BARRIER);
@@ -113,19 +101,16 @@ public class PlayerMove extends BaseListener {
                     blockDisplay.setTransformation(bDisplay2);
                     scheduler.runTaskTimer(plugin, event -> {
                         int x = 57;
-                        world.setType(new Location(world, 948, x, 455), Material.BARRIER);
-                        world.setType(new Location(world, 949, x, 455), Material.BARRIER);
-                        world.setType(new Location(world, 950, x, 455), Material.BARRIER);
+                        world.setType(new Location(world, 948, x, 455), Material.AIR);
+                        world.setType(new Location(world, 949, x, 455), Material.AIR);
+                        world.setType(new Location(world, 950, x, 455), Material.AIR);
                         x++;
                         if(x == 62){
                             event.cancel();
                         }
                     }, 0, 20);
                 }, 500);
-                scheduler.runTaskLater(plugin, () -> {
-                    blockDisplay.remove();
-                    doorShulker.remove();
-                }, 800);
+                scheduler.runTaskLater(plugin, blockDisplay::remove, 800);
             }
             if (to.x() > 973 & from.x() <= 973 & p.getY() > 46 & p.getY() < 52 & p.getZ() < 464 & p.getZ() > 461){
                 List<Integer> answer = pPDC.get(TimeBound.getKey("tutorialDungeonPuzzleOneAnswer"),PersistentDataType.LIST.integers());
